@@ -43,11 +43,12 @@ export async function load(
     }
   }
 
-  let babelCore = await options.packageManager.require(
-    '@babel/core',
-    config.searchPath,
-    {range: BABEL_RANGE},
-  );
+  let babelCore = process.browser
+    ? require('@babel/core')
+    : await options.packageManager.require('@babel/core', config.searchPath, {
+        range: BABEL_RANGE,
+      });
+
   let partialConfig = babelCore.loadPartialConfig({
     filename: config.searchPath,
     cwd: path.dirname(config.searchPath),
@@ -255,9 +256,10 @@ async function definePluginDependencies(config) {
 }
 
 export async function postDeserialize(config: Config, options: PluginOptions) {
-  let babelCore = config.result.internal
-    ? bundledBabelCore
-    : await options.packageManager.require('@babel/core', config.searchPath);
+  let babelCore =
+    config.result.internal || process.browser
+      ? bundledBabelCore
+      : await options.packageManager.require('@babel/core', config.searchPath);
 
   config.result.config.presets = await Promise.all(
     config.result.config.presets.map(async configItem => {
