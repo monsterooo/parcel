@@ -6,8 +6,10 @@ import {Reporter} from '@parcel/plugin';
 import {generateBundleReport} from '@parcel/utils';
 
 /* eslint-disable no-console */
-const writeToStdout = makeWriter(console.log);
-const writeToStderr = makeWriter(console.error);
+const writeToStdout =
+  globalThis.PARCEL_JSON_LOGGER_STDOUT || makeWriter(console.log);
+const writeToStderr =
+  globalThis.PARCEL_JSON_LOGGER_STDERR || makeWriter(console.error);
 /* eslint-enable no-console */
 
 const LOG_LEVELS = {

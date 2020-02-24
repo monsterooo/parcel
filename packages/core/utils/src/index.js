@@ -4,13 +4,13 @@ export type * from './prettyDiagnostic';
 
 export {default as countLines} from './countLines';
 export {default as generateBundleReport} from './generateBundleReport';
-export {default as generateCertificate} from './generateCertificate';
+// export {default as generateCertificate} from './generateCertificate';
 export {default as getCertificate} from './getCertificate';
 export {default as getRootDir} from './getRootDir';
 export {default as isURL} from './is-url';
 export {default as objectHash} from './objectHash';
 export {default as prettifyTime} from './prettifyTime';
-export {default as prettyDiagnostic} from './prettyDiagnostic';
+// export {default as prettyDiagnostic} from './prettyDiagnostic';
 export {default as PromiseQueue} from './PromiseQueue';
 // $FlowFixMe this is untyped
 export {default as promisify} from './promisify';
@@ -31,7 +31,7 @@ export * from './Deferred';
 export * from './glob';
 export * from './md5';
 export * from './schema';
-export * from './http-server';
+// export * from './http-server';
 export * from './path';
 export * from './replaceBundleReferences';
 export * from './stream';

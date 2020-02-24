@@ -4,31 +4,30 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "build:browser": "parcel2c build . --target appBrowser --no-source-maps --no-scope-hoist"
+    "build:browser": "parcel2c build . --no-source-maps --no-scope-hoist"
   },
   "dependencies": {
     "@mischnic/pako": "^1.0.10",
     "@parcel/core": "^2.0.0-alpha.3.2",
     "@parcel/fs": "^2.0.0-alpha.3",
     "@parcel/package-manager": "^2.0.0-alpha.3",
+    "codemirror": "^5.52.0",
+    "comlink": "^4.2.0",
     "isomorphic-fetch": "^2.2.1",
-    "semver": "^6.3.0"
+    "jszip": "^3.2.2",
+    "preact": "^10.3.2",
+    "react-codemirror2": "^6.0.0",
+    "semver": "^7.1.3"
   },
   "alias": {
     "fs": "./fs.js",
-    "@parcel/watcher": false
+    "@parcel/watcher": false,
+    "react": "preact"
   },
-  "source": "index.html",
-  "appNode": "dist/node/index.js",
-  "appBrowser": "dist/browser/index.html",
+  "source": "src/parcel/index.html",
+  "app": "dist/index.html",
   "targets": {
-    "appNode": {
-      "includeNodeModules": true,
-      "engines": {
-        "node": ">=12"
-      }
-    },
-    "appBrowser": {
+    "app": {
       "engines": {
         "browsers": "Chrome 75"
       }

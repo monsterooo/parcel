@@ -6,7 +6,9 @@ try {
   _serialize = v8.serialize;
   // $FlowFixMe - flow doesn't know about this method yet
   _deserialize = v8.deserialize;
-} catch (_) {
+} catch (_) {}
+
+if (!_serialize || !_deserialize) {
   const {parse, stringify} = require('teleport-javascript');
   _serialize = v => Buffer.from(stringify(v));
   _deserialize = v => parse(v.toString('utf8'));
@@ -199,9 +201,7 @@ export function restoreDeserializedObject(object: any) {
       let ctor = nameToCtor.get(value.$$type);
       if (ctor == null) {
         throw new Error(
-          `Expected constructor ${
-            value.$$type
-          } to be registered with serializer to deserialize`,
+          `Expected constructor ${value.$$type} to be registered with serializer to deserialize`,
         );
       }
 
