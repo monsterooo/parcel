@@ -4,7 +4,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "build:browser": "parcel2c build . --no-source-maps --no-scope-hoist"
+    "build": "parcel2c build . --no-source-maps --no-scope-hoist"
   },
   "dependencies": {
     "@mischnic/pako": "^1.0.10",

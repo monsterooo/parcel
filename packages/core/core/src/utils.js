@@ -38,15 +38,15 @@ export function registerCoreWithSerializer() {
     throw new Error('Expected package version to be a string');
   }
 
-  for (let ctor of [
-    AssetGraph,
-    Config,
-    BundleGraph,
-    Graph,
-    ParcelConfig,
-    RequestGraph,
+  for (let [name, ctor] of [
+    ['AssetGraph', AssetGraph],
+    ['Config', Config],
+    ['BundleGraph', BundleGraph],
+    ['Graph', Graph],
+    ['ParcelConfig', ParcelConfig],
+    ['RequestGraph', RequestGraph],
   ]) {
-    registerSerializableClass(packageVersion + ':' + ctor.name, ctor);
+    registerSerializableClass(packageVersion + ':' + name, ctor);
   }
 
   coreRegistered = true;
