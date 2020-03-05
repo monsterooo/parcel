@@ -2,8 +2,7 @@ import assert from 'assert';
 import path from 'path';
 import {bundle as _bundle, run, outputFS} from '@parcel/test-utils';
 
-const bundle = (name, opts = {}) =>
-  _bundle(name, Object.assign({scopeHoist: true}, opts));
+const bundle = (name, opts = {}) => _bundle(name, {scopeHoist: true, ...opts});
 
 describe('output formats', function() {
   describe('commonjs', function() {

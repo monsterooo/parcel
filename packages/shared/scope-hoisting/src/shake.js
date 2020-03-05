@@ -13,6 +13,7 @@ import {
   isVariableDeclarator,
 } from '@babel/types';
 import invariant from 'assert';
+import {pathRemove} from './utils';
 
 /**
  * This is a small small implementation of dead code removal specialized to handle
@@ -30,8 +31,6 @@ export default function treeShake(
   do {
     removed = false;
 
-    // Recrawl to get all bindings.
-    scope.crawl();
     Object.keys(scope.bindings).forEach((name: string) => {
       let binding = getUnusedBinding(scope.path, name);
 
@@ -41,7 +40,7 @@ export default function treeShake(
       }
 
       // Remove the binding and all references to it.
-      binding.path.remove();
+      pathRemove(binding.path);
       [...binding.referencePaths, ...binding.constantViolations].forEach(
         remove,
       );
@@ -135,7 +134,7 @@ function remove(path: NodePath<Node>) {
       isExpressionStatement(parent) &&
       ((right = path.get('right')).isPure() || right.isIdentifier())
     ) {
-      path.remove();
+      pathRemove(path);
     } else {
       // right side isn't pure
       path.replaceWith(node.right);
@@ -150,7 +149,7 @@ function remove(path: NodePath<Node>) {
       path.parentPath.replaceWith(node);
       remove(path.parentPath);
     } else {
-      path.remove();
+      pathRemove(path);
     }
   }
 }

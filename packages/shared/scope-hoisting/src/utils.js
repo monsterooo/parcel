@@ -1,8 +1,11 @@
 // @flow
 import type {Asset, MutableAsset, Bundle, BundleGraph} from '@parcel/types';
+import type {NodePath} from '@babel/traverse';
+import type {Node} from '@babel/types';
 
 import * as t from '@babel/types';
 import invariant from 'assert';
+import {simple as walkSimple} from 'babylon-walk';
 
 export function getName(
   asset: Asset | MutableAsset,
@@ -66,4 +69,40 @@ export function isReferenced(bundle: Bundle, bundleGraph: BundleGraph) {
 export function assertString(v: mixed): string {
   invariant(typeof v === 'string');
   return v;
+}
+
+const RemoveVisitor = {
+  Identifier(node, scope) {
+    dereferenceIdentifier(node, scope);
+  },
+};
+
+// like path.remove(), but updates bindings in path.scope.getProgramParent()
+export function pathRemove(path: NodePath<Node>) {
+  let scope = path.scope.getProgramParent();
+  walkSimple(path.node, RemoveVisitor, scope);
+  path.remove();
+}
+
+function dereferenceIdentifier(node, scope) {
+  let binding = scope.getBinding(node.name);
+  if (binding) {
+    let i = binding.referencePaths.findIndex(v => v.node === node);
+    if (i >= 0) {
+      binding.dereference();
+      binding.referencePaths.splice(i, 1);
+      return;
+    }
+
+    let j = binding.constantViolations.findIndex(v =>
+      Object.values(v.getBindingIdentifiers()).includes(node),
+    );
+    if (j >= 0) {
+      binding.constantViolations.splice(j, 1);
+      if (binding.constantViolations.length == 0) {
+        binding.constant = true;
+      }
+      return;
+    }
+  }
 }
