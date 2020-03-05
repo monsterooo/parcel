@@ -3,6 +3,8 @@
 import type {Asset, Bundle, BundleGraph, Symbol} from '@parcel/types';
 import type {NodePath} from '@babel/traverse';
 import type {
+  CallExpression,
+  ExpressionStatement,
   Identifier,
   Program,
   Statement,
@@ -23,8 +25,8 @@ const IMPORT_TEMPLATE = template.statement<
 >('var IDENTIFIER = parcelRequire(ASSET_ID);');
 const EXPORT_TEMPLATE = template.statement<
   {|IDENTIFIER: Identifier, ASSET_ID: StringLiteral|},
-  Statement,
->('parcelRequire.register(ASSET_ID, IDENTIFIER)');
+  ExpressionStatement,
+>('parcelRequire.register(ASSET_ID, IDENTIFIER);');
 const IMPORTSCRIPTS_TEMPLATE = template.statement<
   {|BUNDLE: StringLiteral|},
   Statement,
@@ -70,7 +72,7 @@ export function generateExports(
   path: NodePath<Program>,
 ) {
   let exported = new Set<Symbol>();
-  let statements = [];
+  let statements: Array<ExpressionStatement> = [];
 
   for (let asset of referencedAssets) {
     let exportsId = asset.meta.exportsIdentifier;
@@ -102,6 +104,16 @@ export function generateExports(
     );
   }
 
-  path.pushContainer('body', statements);
+  let decls = path.pushContainer('body', statements);
+  for (let decl of decls) {
+    let call = decl.get<NodePath<CallExpression>>('expression');
+    path.scope
+      .getBinding('parcelRequire')
+      ?.reference(call.get<NodePath<Identifier>>('callee'));
+
+    let id = call.get<NodePath<Identifier>>('arguments.1');
+    path.scope.getBinding(id.node.name)?.reference(id);
+  }
+
   return exported;
 }
