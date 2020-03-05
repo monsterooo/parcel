@@ -8,6 +8,9 @@ import type {
   Symbol,
 } from '@parcel/types';
 import type {ExternalModule} from '../types';
+import type {ImportDeclaration, Program} from '@babel/types';
+import type {NodePath} from '@babel/traverse';
+
 import * as t from '@babel/types';
 import {relativeBundlePath} from '@parcel/utils';
 import nullthrows from 'nullthrows';
@@ -15,29 +18,37 @@ import invariant from 'assert';
 import {relative} from 'path';
 import ThrowableDiagnostic from '@parcel/diagnostic';
 import rename from '../renamer';
-import {assertString} from '../utils';
+import {assertString, removeReplaceBinding} from '../utils';
 
 export function generateBundleImports(
   from: Bundle,
   bundle: Bundle,
   assets: Set<Asset>,
+  path: NodePath<Program>,
 ) {
   let specifiers = [...assets].map(asset => {
     let id = t.identifier(assertString(asset.meta.exportsIdentifier));
     return t.importSpecifier(id, id);
   });
 
-  return [
+  let [decl] = path.unshiftContainer('body', [
     t.importDeclaration(
       specifiers,
       t.stringLiteral(relativeBundlePath(from, bundle)),
     ),
-  ];
+  ]);
+
+  for (let spec of decl.get<Array<NodePath<BabelNodeImportSpecifier>>>(
+    'specifiers',
+  )) {
+    removeReplaceBinding(path.scope, spec.node.local.name, spec, 'module');
+  }
 }
 
 export function generateExternalImport(
   bundle: Bundle,
   external: ExternalModule,
+  path: NodePath<Program>,
 ) {
   let {source, specifiers, isCommonJS} = external;
   let defaultSpecifier = null;
@@ -55,10 +66,8 @@ export function generateExternalImport(
     }
   }
 
-  let statements = [];
-
+  let statements: Array<ImportDeclaration> = [];
   // ESModule syntax allows combining default and namespace specifiers, or default and named, but not all three.
-
   if (namespaceSpecifier) {
     let s = [namespaceSpecifier];
     if (defaultSpecifier) {
@@ -75,7 +84,23 @@ export function generateExternalImport(
     );
   }
 
-  return statements;
+  let decls = path.unshiftContainer('body', statements);
+  for (let decl of decls) {
+    let specifiers = decl.get<
+      Array<
+        NodePath<
+          | BabelNodeImportSpecifier
+          | BabelNodeImportDefaultSpecifier
+          | BabelNodeImportNamespaceSpecifier,
+        >,
+      >,
+    >('specifiers');
+    for (let specifier of specifiers) {
+      for (let name of Object.keys(specifier.getBindingIdentifiers())) {
+        removeReplaceBinding(path.scope, name, specifier, 'module');
+      }
+    }
+  }
 }
 
 export function generateExports(

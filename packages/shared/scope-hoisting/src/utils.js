@@ -1,10 +1,25 @@
 // @flow
 import type {Asset, MutableAsset, Bundle, BundleGraph} from '@parcel/types';
-import type {NodePath} from '@babel/traverse';
-import type {Node} from '@babel/types';
+import type {NodePath, Scope, VariableDeclarationKind} from '@babel/traverse';
+import type {
+  ClassDeclaration,
+  FunctionDeclaration,
+  ImportDefaultSpecifier,
+  ImportSpecifier,
+  Node,
+  VariableDeclarator,
+  ImportNamespaceSpecifier,
+} from '@babel/types';
 
 import * as t from '@babel/types';
+import {
+  isClassDeclaration,
+  isFunctionDeclaration,
+  isIdentifier,
+  isVariableDeclarator,
+} from '@babel/types';
 import invariant from 'assert';
+import nullthrows from 'nullthrows';
 import {simple as walkSimple} from 'babylon-walk';
 
 export function getName(
@@ -105,4 +120,46 @@ function dereferenceIdentifier(node, scope) {
       return;
     }
   }
+}
+
+export function removeReplaceBinding(
+  scope: Scope,
+  name: string,
+  newPath: NodePath<
+    | VariableDeclarator
+    | ClassDeclaration
+    | FunctionDeclaration
+    | ImportSpecifier
+    | ImportDefaultSpecifier
+    | ImportNamespaceSpecifier,
+  >,
+  newKind?: VariableDeclarationKind,
+) {
+  let binding = nullthrows(scope.getBinding(name));
+  let old = binding.path;
+  let {node: oldNode} = binding.path;
+  binding.path = newPath;
+  binding.identifier = newPath.getBindingIdentifiers()[name];
+  if (newKind) {
+    binding.kind = newKind;
+  }
+
+  if (
+    isClassDeclaration(oldNode) ||
+    isVariableDeclarator(oldNode) ||
+    isFunctionDeclaration(oldNode)
+  ) {
+    let {id} = oldNode;
+    if (isIdentifier(id)) {
+      id.name = scope.generateUid();
+      old.remove();
+      return;
+    }
+  }
+
+  // TODO
+  // ObjectPattern
+  let id = old.getBindingIdentifierPaths()[name];
+  id.node.name = scope.generateUid();
+  id.parentPath.remove();
 }

@@ -5,11 +5,11 @@ import type {NodePath} from '@babel/traverse';
 import type {
   CallExpression,
   ExpressionStatement,
+  Expression,
   Identifier,
   Program,
   Statement,
   StringLiteral,
-  VariableDeclaration,
 } from '@babel/types';
 
 import * as t from '@babel/types';
@@ -18,11 +18,12 @@ import invariant from 'assert';
 import {relativeBundlePath} from '@parcel/utils';
 import {isEntry, isReferenced} from '../utils';
 import {assertString} from '../utils';
+import nullthrows from 'nullthrows';
 
-const IMPORT_TEMPLATE = template.statement<
-  {|IDENTIFIER: Identifier, ASSET_ID: StringLiteral|},
-  VariableDeclaration,
->('var IDENTIFIER = parcelRequire(ASSET_ID);');
+const IMPORT_TEMPLATE = template.expression<
+  {|ASSET_ID: StringLiteral|},
+  Expression,
+>('parcelRequire(ASSET_ID)');
 const EXPORT_TEMPLATE = template.statement<
   {|IDENTIFIER: Identifier, ASSET_ID: StringLiteral|},
   ExpressionStatement,
@@ -36,9 +37,9 @@ export function generateBundleImports(
   from: Bundle,
   bundle: Bundle,
   assets: Set<Asset>,
+  path: NodePath<Program>,
 ) {
   let statements = [];
-
   if (from.env.isWorker()) {
     statements.push(
       IMPORTSCRIPTS_TEMPLATE({
@@ -46,17 +47,18 @@ export function generateBundleImports(
       }),
     );
   }
+  path.unshiftContainer('body', statements);
 
   for (let asset of assets) {
-    statements.push(
-      IMPORT_TEMPLATE({
-        IDENTIFIER: t.identifier(assertString(asset.meta.exportsIdentifier)),
-        ASSET_ID: t.stringLiteral(asset.id),
-      }),
-    );
-  }
+    // var ${asset.meta.exportsIdentifier}; was inserted already, add RHS
+    let [decl] = nullthrows(
+      path.scope.getBinding(assertString(asset.meta.exportsIdentifier)),
+    )
+      .path.get('init')
+      .replaceWith(IMPORT_TEMPLATE({ASSET_ID: t.stringLiteral(asset.id)}));
 
-  return statements;
+    path.scope.getBinding('parcelRequire')?.reference(decl.get('callee'));
+  }
 }
 
 export function generateExternalImport() {

@@ -10,23 +10,26 @@ import type {
 import type {
   Expression,
   ExpressionStatement,
-  ObjectProperty,
-  VariableDeclaration,
   Identifier,
   LVal,
+  ObjectProperty,
+  Program,
+  VariableDeclarator,
+  VariableDeclaration,
 } from '@babel/types';
-import type {Scope} from '@babel/traverse';
+import type {NodePath, Scope} from '@babel/traverse';
 import type {ExternalModule} from '../types';
 
 import * as t from '@babel/types';
 import {isIdentifier} from '@babel/types';
 import template from '@babel/template';
 import invariant from 'assert';
+import nullthrows from 'nullthrows';
 import {relative} from 'path';
 import {relativeBundlePath} from '@parcel/utils';
 import ThrowableDiagnostic from '@parcel/diagnostic';
 import rename from '../renamer';
-import {assertString} from '../utils';
+import {assertString, removeReplaceBinding} from '../utils';
 
 const REQUIRE_TEMPLATE: ({|
   BUNDLE: Expression,
@@ -71,7 +74,12 @@ const DESTRUCTURING_ENGINES = {
   electron: '1.2',
 };
 
-function generateDestructuringAssignment(env, specifiers, value, scope) {
+function generateDestructuringAssignment(
+  env,
+  specifiers,
+  value: Expression,
+  scope: Scope,
+): Array<VariableDeclaration> {
   // If destructuring is not supported, generate a series of variable declarations
   // with member expressions for each property.
   if (!env.matchesEngines(DESTRUCTURING_ENGINES)) {
@@ -112,7 +120,7 @@ export function generateBundleImports(
   from: Bundle,
   bundle: Bundle,
   assets: Set<Asset>,
-  scope: Scope,
+  path: NodePath<Program>,
 ) {
   let specifiers: Array<ObjectProperty> = [...assets].map(asset => {
     let id = t.identifier(assertString(asset.meta.exportsIdentifier));
@@ -124,22 +132,37 @@ export function generateBundleImports(
   });
 
   if (specifiers.length > 0) {
-    return generateDestructuringAssignment(
-      bundle.env,
-      specifiers,
-      expression,
-      scope,
+    let decls = path.unshiftContainer(
+      'body',
+      generateDestructuringAssignment(
+        bundle.env,
+        specifiers,
+        expression,
+        path.scope,
+      ),
     );
+    for (let decl of decls) {
+      // every VariableDeclaration emitted by generateDestructuringAssignment has only
+      // one VariableDeclarator
+      let next = decl.get<NodePath<VariableDeclarator>>('declarations.0');
+      for (let [name] of (Object.entries(
+        decl.getBindingIdentifierPaths(),
+      ): Array<[string, any]>)) {
+        removeReplaceBinding(path.scope, name, next);
+      }
+    }
+  } else {
+    path.unshiftContainer('body', [t.expressionStatement(expression)]);
   }
-
-  return [t.expressionStatement(expression)];
 }
 
 export function generateExternalImport(
   bundle: Bundle,
   external: ExternalModule,
-  scope: Scope,
+  path: NodePath<Program>,
 ) {
+  let {scope} = path;
+
   let {source, specifiers, isCommonJS} = external;
   let statements = [];
   let properties: Array<ObjectProperty> = [];
@@ -268,7 +291,28 @@ export function generateExternalImport(
     );
   }
 
-  return statements;
+  let decls = path.unshiftContainer('body', statements);
+  for (let decl of decls) {
+    let next = decl.get('declarations.0');
+    for (let [name] of (Object.entries(decl.getBindingIdentifierPaths()): Array<
+      [string, any],
+    >)) {
+      if (path.scope.hasOwnBinding(name)) {
+        removeReplaceBinding(path.scope, name, next);
+      } else {
+        path.scope.registerDeclaration(next);
+      }
+    }
+
+    if (
+      t.isCallExpression(next.node.init) &&
+      !t.isIdentifier(next.node.init.callee, {name: 'require'})
+    ) {
+      // $parcel$exportWildcard or $parcel$interopDefault
+      let id = next.get('init.callee');
+      nullthrows(path.scope.getBinding(id.node.name)).reference(id);
+    }
+  }
 }
 
 export function generateExports(

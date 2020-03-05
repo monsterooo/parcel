@@ -287,6 +287,15 @@ export function link({
       }
 
       specifiers.set(imported, renamed);
+
+      // a variable so we can track the scope
+      let [decl] = programScope.path.unshiftContainer(
+        'body',
+        t.variableDeclaration('var', [
+          t.variableDeclarator(t.identifier(renamed)),
+        ]),
+      );
+      programScope.registerBinding('var', decl.get('declarations.0'));
     }
 
     return specifiers.get('*');
@@ -313,7 +322,19 @@ export function link({
     if (!isUnusedValue(path) && mod.meta.exportsIdentifier) {
       invariant(imported.assets != null);
       imported.assets.add(mod);
-      return t.identifier(assertString(mod.meta.exportsIdentifier));
+
+      let exportsIdentifier = assertString(mod.meta.exportsIdentifier);
+
+      // a variable so we can track the scope
+      let program = path.scope.getProgramParent().path;
+      let [decl] = program.unshiftContainer('body', [
+        t.variableDeclaration('var', [
+          t.variableDeclarator(t.identifier(exportsIdentifier)),
+        ]),
+      ]);
+      program.scope.registerBinding('var', decl.get('declarations.0'));
+
+      return t.identifier(exportsIdentifier);
     }
   }
 
@@ -569,28 +590,17 @@ export function link({
         path.scope.crawl();
 
         // Insert imports for external bundles
-        let imports = [];
         for (let file of importedFiles.values()) {
           if (file.bundle) {
-            imports.push(
-              ...format.generateBundleImports(
-                bundle,
-                file.bundle,
-                file.assets,
-                path.scope,
-              ),
+            format.generateBundleImports(
+              bundle,
+              file.bundle,
+              file.assets,
+              path,
             );
           } else {
-            imports.push(
-              ...format.generateExternalImport(bundle, file, path.scope),
-            );
+            format.generateExternalImport(bundle, file, path);
           }
-        }
-
-        if (imports.length > 0) {
-          // Add import statements and update scope to collect references
-          path.unshiftContainer('body', imports);
-          path.scope.crawl();
         }
 
         // Generate exports
@@ -602,6 +612,7 @@ export function link({
           replacements,
           options,
         );
+        path.scope.crawl();
 
         treeShake(path.scope, exported);
       },
