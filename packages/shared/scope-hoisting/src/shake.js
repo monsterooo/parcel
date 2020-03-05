@@ -126,6 +126,7 @@ function remove(path: NodePath<Node>) {
   if (isAssignmentExpression(node)) {
     let right;
     if (isSequenceExpression(parent) && parent.expressions.length === 1) {
+      // TODO missing test coverage
       // replace sequence expression with it's sole child
       path.parentPath.replaceWith(node);
       remove(path.parentPath);
@@ -145,6 +146,7 @@ function remove(path: NodePath<Node>) {
     remove(path.parentPath);
   } else if (!path.removed) {
     if (isSequenceExpression(parent) && parent.expressions.length === 1) {
+      // TODO missing test coverage
       // replace sequence expression with it's sole child
       path.parentPath.replaceWith(node);
       remove(path.parentPath);

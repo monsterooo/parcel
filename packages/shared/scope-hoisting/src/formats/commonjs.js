@@ -282,6 +282,7 @@ export function generateExternalImport(
       ),
     );
   } else {
+    // TODO missing test coverage
     statements.push(
       t.expressionStatement(
         REQUIRE_TEMPLATE({
@@ -388,6 +389,7 @@ export function generateExports(
         // If there is an existing binding with the exported name (e.g. an import),
         // rename it so we can use the name for the export instead.
         if (path.scope.hasBinding(exportSymbol) && exportSymbol !== symbol) {
+          // TODO missing test coverage
           rename(
             path.scope,
             exportSymbol,
@@ -412,6 +414,7 @@ export function generateExports(
         // Exports other than the default export are live bindings. Insert an assignment
         // after each constant violation so this remains true.
         if (exportSymbol !== 'default') {
+          // TODO missing test coverage
           for (let path of binding.constantViolations) {
             let [stmt] = path.insertAfter(
               EXPORT_TEMPLATE({

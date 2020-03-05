@@ -239,6 +239,7 @@ const VISITOR: Visitor<MutableAsset> = {
     }
 
     if (t.matchesPattern(path.node, 'module.bundle')) {
+      // TODO missing test coverage
       path.replaceWith(t.identifier('parcelRequire'));
     }
   },
@@ -739,6 +740,7 @@ function getExportsIdentifier(asset: MutableAsset, scope) {
 
 function getCJSExportsIdentifier(asset: MutableAsset, scope) {
   if (scope.getProgramParent().getData('shouldWrap')) {
+    // TODO missing test coverage
     return t.identifier('exports');
   } else if (scope.getProgramParent().getData('cjsExportsReassigned')) {
     let id = getIdentifier(asset, 'cjs_exports');

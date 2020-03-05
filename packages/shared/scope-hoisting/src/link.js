@@ -122,6 +122,7 @@ export function link({
     }
 
     if (replacements && identifier && replacements.has(identifier)) {
+      // TODO missing test coverage
       identifier = replacements.get(identifier);
     }
 
@@ -143,6 +144,7 @@ export function link({
     // If the module is not in this bundle, create a `require` call for it.
     if (!node && (!mod.meta.id || !assets.has(assertString(mod.meta.id)))) {
       node = addBundleImport(originalModule, path);
+      // TODO missing test coverage (: null)
       return node ? interop(originalModule, symbol, path, node) : null;
     }
 
@@ -156,6 +158,7 @@ export function link({
     if (!node && mod.meta.isCommonJS) {
       node = findSymbol(path, assertString(mod.meta.exportsIdentifier));
       if (!node) {
+        // TODO missing test coverage
         return null;
       }
 
@@ -167,6 +170,7 @@ export function link({
 
   function findSymbol(path, symbol) {
     if (symbol && replacements.has(symbol)) {
+      // TODO missing test coverage
       symbol = replacements.get(symbol);
     }
 
@@ -195,6 +199,7 @@ export function link({
         }
 
         if (!parent) {
+          // TODO missing test coverage
           parent = path.getStatementParent();
         }
 
@@ -205,11 +210,9 @@ export function link({
           }),
         );
 
-        if (binding) {
-          binding.reference(
-            decl.get<NodePath<Identifier>>('declarations.0.init'),
-          );
-        }
+        binding?.reference(
+          decl.get<NodePath<Identifier>>('declarations.0.init'),
+        );
 
         getScopeBefore(parent).registerDeclaration(decl);
       }
@@ -408,6 +411,8 @@ export function link({
                   }
 
                   for (let path of binding.constantViolations) {
+                    // TODO missing test coverage
+
                     path.insertAfter(
                       ESMODULE_TEMPLATE({EXPORTS: t.identifier(name)}),
                     );
@@ -551,9 +556,6 @@ export function link({
     },
     ReferencedIdentifier(path) {
       let {name} = path.node;
-      if (typeof name !== 'string') {
-        return;
-      }
 
       let replacement = replacements.get(name);
       if (replacement) {

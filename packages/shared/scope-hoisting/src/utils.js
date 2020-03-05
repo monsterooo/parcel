@@ -20,7 +20,7 @@ import {
 } from '@babel/types';
 import invariant from 'assert';
 import nullthrows from 'nullthrows';
-import {simple as walkSimple} from 'babylon-walk';
+import {simple as walkSimple} from '@parcel/babylon-walk';
 
 export function getName(
   asset: Asset | MutableAsset,
@@ -113,6 +113,7 @@ function dereferenceIdentifier(node, scope) {
       Object.values(v.getBindingIdentifiers()).includes(node),
     );
     if (j >= 0) {
+      // TODO missing test coverage
       binding.constantViolations.splice(j, 1);
       if (binding.constantViolations.length == 0) {
         binding.constant = true;
@@ -147,7 +148,7 @@ export function removeReplaceBinding(
   if (
     isClassDeclaration(oldNode) ||
     isVariableDeclarator(oldNode) ||
-    isFunctionDeclaration(oldNode)
+    isFunctionDeclaration(oldNode) // <-- TODO missing test coverage
   ) {
     let {id} = oldNode;
     if (isIdentifier(id)) {
@@ -157,8 +158,7 @@ export function removeReplaceBinding(
     }
   }
 
-  // TODO
-  // ObjectPattern
+  // TODO missing test coverage
   let id = old.getBindingIdentifierPaths()[name];
   id.node.name = scope.generateUid();
   id.parentPath.remove();

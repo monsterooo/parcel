@@ -292,6 +292,7 @@ function wrapModule(asset: Asset, statements) {
       // Function declarations can be hoisted out of the module initialization function
       fns.push(node);
     } else if (isClassDeclaration(node)) {
+      // TODO missing test coverage
       let {id} = node;
       invariant(isIdentifier(id));
       // Class declarations are not hoisted. We declare a variable outside the
