@@ -1,3 +1,10 @@
+####### @nodelib/fs.scandir
+
+echo '"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.IS_SUPPORT_READDIR_WITH_FILE_TYPES = true;' \
+    > $(node -p 'require.resolve("@nodelib/fs.scandir/out/constants.js")')
+
 ####### (dart-)sass
 
 # SASS_GLOBAL_A='var self = Object.create(global)'

@@ -150,7 +150,10 @@ export class NodePackageManager implements PackageManager {
       try {
         resolved = await resolve(this.fs, name, {
           basedir,
-          extensions: ['.js', '.json'], //Object.keys(Module._extensions),
+          // $FlowFixMe
+          extensions: process.browser
+            ? ['.js', '.json']
+            : Object.keys(Module._extensions),
         });
       } catch (e) {
         if (e.code !== 'MODULE_NOT_FOUND' || options?.autoInstall === false) {

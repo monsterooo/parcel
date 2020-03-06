@@ -4,7 +4,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "build": "parcel2c build . --no-source-maps --no-scope-hoist"
+    "build": "parcel2 build . --no-source-maps"
   },
   "dependencies": {
     "@mischnic/pako": "^1.0.10",
@@ -12,12 +12,7 @@
     "@parcel/core": "^2.0.0-alpha.3.2",
     "@parcel/fs": "^2.0.0-alpha.3",
     "@parcel/package-manager": "^2.0.0-alpha.3",
-    "codemirror": "^5.52.0",
-    "comlink": "^4.2.0",
     "isomorphic-fetch": "^2.2.1",
-    "jszip": "^3.2.2",
-    "preact": "^10.3.2",
-    "react-codemirror2": "^6.0.0",
     "semver": "^7.1.3"
   },
   "alias": {

@@ -8,7 +8,7 @@ import loadDotEnv from './loadDotEnv';
 import path from 'path';
 import nullthrows from 'nullthrows';
 import {resolveConfig} from '@parcel/utils';
-// import {NodeFS} from '@parcel/fs';
+import {NodeFS} from '@parcel/fs';
 import Cache from '@parcel/cache';
 import {NodePackageManager} from '@parcel/package-manager';
 
@@ -28,7 +28,10 @@ export default async function resolveOptions(
     entries = [path.resolve(initialOptions.entries)];
   }
 
-  let inputFS = nullthrows(initialOptions.inputFS); // || new NodeFS();
+  // $FlowFixMe
+  let inputFS = process.browser
+    ? nullthrows(initialOptions.inputFS)
+    : initialOptions.inputFS || new NodeFS();
   let outputFS = initialOptions.outputFS || inputFS; // || new NodeFS();
 
   let packageManager =
