@@ -56,8 +56,5 @@
   "collective": {
     "type": "opencollective",
     "url": "https://opencollective.com/parcel"
-  },
-  "resolutions": {
-    "**/path-browserify": "^1.0.0"
   }
 }

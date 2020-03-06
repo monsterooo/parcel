@@ -92,7 +92,7 @@ export default class BundlerRunner {
     }
     assertSignalNotAborted(signal);
 
-    await dumpGraphToGraphViz(bundleGraph, 'after_bundle');
+    // await dumpGraphToGraphViz(bundleGraph, 'after_bundle');
     try {
       await bundler.optimize({
         bundleGraph: mutableBundleGraph,

@@ -5,6 +5,8 @@ import type {BundleReport} from '@parcel/utils';
 import {Reporter} from '@parcel/plugin';
 import {generateBundleReport} from '@parcel/utils';
 
+// TODO
+
 /* eslint-disable no-console */
 const writeToStdout =
   globalThis.PARCEL_JSON_LOGGER_STDOUT || makeWriter(console.log);

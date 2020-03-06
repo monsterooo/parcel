@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@mischnic/pako": "^1.0.10",
+    "@parcel/config-default": "^2.0.0-alpha.3",
     "@parcel/core": "^2.0.0-alpha.3.2",
     "@parcel/fs": "^2.0.0-alpha.3",
     "@parcel/package-manager": "^2.0.0-alpha.3",

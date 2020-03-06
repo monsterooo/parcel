@@ -1,5 +1,4 @@
 {
-  "name": "parcel2-repl",
   "alias": "parcel2-repl.now.sh",
   "version": 2,
   "builds": [{"src": "./dist/**", "use": "@now/static"}],
