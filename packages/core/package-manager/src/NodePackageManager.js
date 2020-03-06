@@ -24,6 +24,28 @@ import ThrowableDiagnostic, {
   generateJSONCodeHighlights,
 } from '@parcel/diagnostic';
 
+import bundlerDefault from '@parcel/bundler-default';
+import namerDefault from '@parcel/namer-default';
+import optimizerTerser from '@parcel/optimizer-terser';
+import packagerJs from '@parcel/packager-js';
+import packagerRaw from '@parcel/packager-raw';
+import reporterJson from '@parcel/reporter-json';
+import resolverDefault from '@parcel/resolver-default';
+import transformerJS from '@parcel/transformer-js';
+import transformerRaw from '@parcel/transformer-raw';
+
+const BUILTINS = {
+  '@parcel/bundler-default': bundlerDefault,
+  '@parcel/namer-default': namerDefault,
+  '@parcel/optimizer-terser': optimizerTerser,
+  '@parcel/packager-js': packagerJs,
+  '@parcel/packager-raw': packagerRaw,
+  '@parcel/reporter-json': reporterJson,
+  '@parcel/resolver-default': resolverDefault,
+  '@parcel/transformer-js': transformerJS,
+  '@parcel/transformer-raw': transformerRaw,
+};
+
 // This implements a package manager for Node by monkey patching the Node require
 // algorithm so that it uses the specified FileSystem instead of the native one.
 // It also handles installing packages when they are required if not already installed.
@@ -66,92 +88,7 @@ export class NodePackageManager implements PackageManager {
   }
 
   load(resolved: FilePath, from: FilePath): any {
-    switch (resolved) {
-      case '@parcel/bundler-default':
-        return require('@parcel/bundler-default');
-      case '@parcel/namer-default':
-        return require('@parcel/namer-default');
-      // case '@parcel/optimizer-cssnano':
-      //   return require('@parcel/optimizer-cssnano');
-      // case '@parcel/optimizer-data-url':
-      //   return require('@parcel/optimizer-data-url');
-      // case '@parcel/optimizer-htmlnano':
-      //   return require('@parcel/optimizer-htmlnano');
-      case '@parcel/optimizer-terser':
-        return require('@parcel/optimizer-terser');
-      // case '@parcel/packager-css':
-      //   return require('@parcel/packager-css');
-      // case '@parcel/packager-html':
-      //   return require('@parcel/packager-html');
-      case '@parcel/packager-js':
-        return require('@parcel/packager-js');
-      case '@parcel/packager-raw':
-        return require('@parcel/packager-raw');
-      // case '@parcel/packager-ts':
-      //   return require('@parcel/packager-ts');
-      // case '@parcel/reporter-bundle-analyzer':
-      //   return require('@parcel/reporter-bundle-analyzer');
-      // case '@parcel/reporter-cli':
-      //   return require('@parcel/reporter-cli');
-      // case '@parcel/reporter-dev-server':
-      //   return require('@parcel/reporter-dev-server');
-      case '@parcel/reporter-json':
-        return require('@parcel/reporter-json');
-      case '@parcel/resolver-default':
-        return require('@parcel/resolver-default');
-      case '@parcel/runtime-browser-hmr':
-        //   return require('@parcel/runtime-browser-hmr');
-        // case '@parcel/runtime-js':
-        return require('@parcel/runtime-js');
-      case '@parcel/runtime-react-refresh':
-        //   return require('@parcel/runtime-react-refresh');
-        // case '@parcel/transformer-babel':
-        //   return require('@parcel/transformer-babel');
-        // case '@parcel/transformer-coffeescript':
-        //   return require('@parcel/transformer-coffeescript');
-        // case '@parcel/transformer-css':
-        //   return require('@parcel/transformer-css');
-        // case '@parcel/transformer-graphql':
-        //   return require('@parcel/transformer-graphql');
-        // case '@parcel/transformer-html':
-        //   return require('@parcel/transformer-html');
-        // case '@parcel/transformer-inline-string':
-        //   return require('@parcel/transformer-inline-string');
-        // case '@parcel/transformer-js':
-        return require('@parcel/transformer-js');
-      case '@parcel/transformer-json':
-      //   return require('@parcel/transformer-json');
-      // case '@parcel/transformer-less':
-      //   return require('@parcel/transformer-less');
-      // case '@parcel/transformer-mdx':
-      //   return require('@parcel/transformer-mdx');
-      // case '@parcel/transformer-postcss':
-      //   return require('@parcel/transformer-postcss');
-      // case '@parcel/transformer-posthtml':
-      //   return require('@parcel/transformer-posthtml');
-      // case '@parcel/transformer-pug':
-      //   return require('@parcel/transformer-pug');
-      case '@parcel/transformer-raw':
-        return require('@parcel/transformer-raw');
-      // case '@parcel/transformer-react-refresh-babel':
-      //   return require('@parcel/transformer-react-refresh-babel');
-      // case '@parcel/transformer-react-refresh-wrap':
-      //   return require('@parcel/transformer-react-refresh-wrap');
-      // case '@parcel/transformer-sass':
-      //   return require('@parcel/transformer-sass');
-      // case '@parcel/transformer-stylus':
-      //   return require('@parcel/transformer-stylus');
-      // case '@parcel/transformer-sugarss':
-      //   return require('@parcel/transformer-sugarss');
-      // case '@parcel/transformer-toml':
-      //   return require('@parcel/transformer-toml');
-      // case '@parcel/transformer-typescript-types':
-      //   return require('@parcel/transformer-typescript-types');
-      // case '@parcel/transformer-yaml':
-      //   return require('@parcel/transformer-yaml');
-      default:
-        break;
-    }
+    if (resolved in BUILTINS) return BUILTINS[resolved];
 
     if (!path.isAbsolute(resolved)) {
       // Node builtin module

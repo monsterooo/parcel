@@ -29,7 +29,7 @@ import {assertSignalNotAborted, BuildAbortError} from './utils';
 import PackagerRunner from './PackagerRunner';
 import loadParcelConfig from './loadParcelConfig';
 import ReporterRunner, {report} from './ReporterRunner';
-import dumpGraphToGraphViz from './dumpGraphToGraphViz';
+// import dumpGraphToGraphViz from './dumpGraphToGraphViz';
 import resolveOptions from './resolveOptions';
 import {ValueEmitter} from '@parcel/events';
 import {registerCoreWithSerializer} from './utils';
@@ -263,10 +263,10 @@ export default class Parcel {
       let {assetGraph, changedAssets} = await this.#assetGraphBuilder.build(
         signal,
       );
-      dumpGraphToGraphViz(assetGraph, 'MainAssetGraph');
+      // dumpGraphToGraphViz(assetGraph, 'MainAssetGraph');
 
       let bundleGraph = await this.#bundlerRunner.bundle(assetGraph, {signal});
-      dumpGraphToGraphViz(bundleGraph._graph, 'BundleGraph');
+      // dumpGraphToGraphViz(bundleGraph._graph, 'BundleGraph');
 
       await this.#packagerRunner.writeBundles(bundleGraph);
       assertSignalNotAborted(signal);

@@ -6,9 +6,7 @@ import {CONFIG} from '@parcel/plugin';
 import type {FilePath, PackageName} from '@parcel/types';
 import type {PackageManager} from '@parcel/package-manager';
 
-const PARCEL_VERSION = process.browser
-  ? '2.0.0-repl'
-  : require('../package.json').version;
+import {version as PARCEL_VERSION} from '../package.json';
 
 export default async function loadPlugin(
   packageManager: PackageManager,

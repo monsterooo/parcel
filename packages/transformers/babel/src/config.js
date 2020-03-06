@@ -44,7 +44,7 @@ export async function load(
   }
 
   let babelCore = process.browser
-    ? require('@babel/core')
+    ? bundledBabelCore
     : await options.packageManager.require('@babel/core', config.searchPath, {
         range: BABEL_RANGE,
       });

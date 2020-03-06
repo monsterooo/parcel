@@ -11,6 +11,8 @@ import type {
 } from './types';
 import type {HandleFunction} from './Handle';
 
+import * as worker from '@parcel/core/src/worker.js';
+import * as bus from './bus';
 import invariant from 'assert';
 import nullthrows from 'nullthrows';
 import EventEmitter from 'events';
@@ -93,7 +95,7 @@ export default class WorkerFarm extends EventEmitter {
     }
 
     if (this.options.useLocalWorker) {
-      this.localWorker = require('@parcel/core/src/worker.js');
+      this.localWorker = worker;
     }
     this.run = this.createHandle('run');
 
@@ -260,7 +262,7 @@ export default class WorkerFarm extends EventEmitter {
     } else if (location) {
       if (process.browser) {
         if (location.endsWith('@parcel/workers/src/bus.js')) {
-          mod = require('./bus.js');
+          mod = bus;
         } else {
           throw new Error('No dynamic require possible');
         }

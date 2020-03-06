@@ -18,7 +18,7 @@ import InternalBundleGraph, {removeAssetGroups} from './BundleGraph';
 import MutableBundleGraph from './public/MutableBundleGraph';
 import {Bundle} from './public/Bundle';
 import {report} from './ReporterRunner';
-import dumpGraphToGraphViz from './dumpGraphToGraphViz';
+// import dumpGraphToGraphViz from './dumpGraphToGraphViz';
 import {normalizeSeparators, unique, md5FromObject} from '@parcel/utils';
 import PluginOptions from './public/PluginOptions';
 import applyRuntimes from './applyRuntimes';
@@ -71,7 +71,7 @@ export default class BundlerRunner {
     let bundleGraph = removeAssetGroups(graph);
     // $FlowFixMe
     let internalBundleGraph = new InternalBundleGraph({graph: bundleGraph});
-    await dumpGraphToGraphViz(bundleGraph, 'before_bundle');
+    // await dumpGraphToGraphViz(bundleGraph, 'before_bundle');
     let mutableBundleGraph = new MutableBundleGraph(
       internalBundleGraph,
       this.options,
@@ -106,7 +106,7 @@ export default class BundlerRunner {
     }
     assertSignalNotAborted(signal);
 
-    await dumpGraphToGraphViz(bundleGraph, 'after_optimize');
+    // await dumpGraphToGraphViz(bundleGraph, 'after_optimize');
     await this.nameBundles(internalBundleGraph);
 
     await applyRuntimes({
@@ -117,7 +117,7 @@ export default class BundlerRunner {
       pluginOptions: this.pluginOptions,
     });
     assertSignalNotAborted(signal);
-    await dumpGraphToGraphViz(bundleGraph, 'after_runtimes');
+    // await dumpGraphToGraphViz(bundleGraph, 'after_runtimes');
 
     if (cacheKey != null) {
       await this.options.cache.set(cacheKey, internalBundleGraph);

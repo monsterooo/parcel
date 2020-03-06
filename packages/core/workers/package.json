@@ -24,5 +24,9 @@
   },
   "peerDependencies": {
     "@parcel/core": "^2.0.0-alpha.3.1"
+  },
+  "browser": {
+    "./src/threads/ThreadsWorker.js": false,
+    "./src/process/ProcessWorker": false
   }
 }

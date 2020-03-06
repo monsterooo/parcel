@@ -1,4 +1,6 @@
 // @flow
+import teleport from 'teleport-javascript';
+
 let _serialize, _deserialize;
 try {
   const v8 = require('v8');
@@ -6,10 +8,8 @@ try {
   _serialize = v8.serialize;
   // $FlowFixMe - flow doesn't know about this method yet
   _deserialize = v8.deserialize;
-} catch (_) {}
-
-if (!_serialize || !_deserialize) {
-  const {parse, stringify} = require('teleport-javascript');
+} catch (_) {
+  const {parse, stringify} = teleport;
   _serialize = v => Buffer.from(stringify(v));
   _deserialize = v => parse(v.toString('utf8'));
 }
