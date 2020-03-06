@@ -31,7 +31,7 @@ import {
   DepPathRequestRunner,
 } from './requests';
 
-// import dumpToGraphViz from './dumpGraphToGraphViz';
+import dumpToGraphViz from './dumpGraphToGraphViz';
 
 type Opts = {|
   options: ParcelOptions,
@@ -204,8 +204,8 @@ export default class AssetGraphBuilder extends EventEmitter {
       throw errors[0]; // TODO: eventually support multiple errors since requests could reject in parallel
     }
 
-    // dumpToGraphViz(this.assetGraph, 'AssetGraph');
-    // dumpToGraphViz(this.requestGraph, 'RequestGraph');
+    dumpToGraphViz(this.assetGraph, 'AssetGraph');
+    dumpToGraphViz(this.requestGraph, 'RequestGraph');
 
     let changedAssets = this.changedAssets;
     this.changedAssets = new Map();

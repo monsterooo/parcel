@@ -18,6 +18,8 @@ if (false) {
 };
 
 (async () => {
+  // $FlowFixMe
+  globalThis.PARCEL_DUMP_GRAPHVIZ = true;
   // globalThis.PARCEL_JSON_LOGGER_STDOUT = async d => {
   //   switch (d.type) {
   //     case 'buildStart':
