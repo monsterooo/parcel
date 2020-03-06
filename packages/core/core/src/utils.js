@@ -38,14 +38,15 @@ export function registerCoreWithSerializer() {
     throw new Error('Expected package version to be a string');
   }
 
-  for (let [name, ctor] of [
-    ['AssetGraph', AssetGraph],
-    ['Config', Config],
-    ['BundleGraph', BundleGraph],
-    ['Graph', Graph],
-    ['ParcelConfig', ParcelConfig],
-    ['RequestGraph', RequestGraph],
-  ]) {
+  // $FlowFixMe
+  for (let [name, ctor] of (Object.entries({
+    AssetGraph,
+    Config,
+    BundleGraph,
+    Graph,
+    ParcelConfig,
+    RequestGraph,
+  }): Array<[string, Class<*>]>)) {
     registerSerializableClass(packageVersion + ':' + name, ctor);
   }
 

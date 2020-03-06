@@ -22,6 +22,7 @@ export async function blobToString(blob: Blob): Promise<string> {
   } else if (blob instanceof Buffer) {
     return blob.toString();
   } else {
+    // $FlowFixMe ?
     return blob;
   }
 }

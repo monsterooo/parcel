@@ -1,4 +1,5 @@
 // @flow
+/* global navigator:readonly */
 
 import type {ErrorWithCode, FilePath} from '@parcel/types';
 import type {
@@ -11,6 +12,7 @@ import type {
 } from './types';
 import type {HandleFunction} from './Handle';
 
+// eslint-disable-next-line monorepo/no-internal-import
 import * as worker from '@parcel/core/src/worker.js';
 import * as bus from './bus';
 import invariant from 'assert';
@@ -24,7 +26,7 @@ import {
 } from '@parcel/core';
 import ThrowableDiagnostic, {anyToDiagnostic} from '@parcel/diagnostic';
 import Worker, {type WorkerCall} from './Worker';
-// import cpuCount from './cpuCount';
+import cpuCount from './cpuCount';
 import Handle from './Handle';
 import {child} from './childState';
 import {detectBackend} from './backend';
@@ -47,9 +49,10 @@ export type FarmOptions = {|
   patchConsole?: boolean,
 |};
 
-type WorkerModule = {|
+type WorkerModule = {
   +[string]: (...args: Array<mixed>) => Promise<mixed>,
-|};
+  ...,
+};
 
 export type WorkerApi = {|
   callMaster(CallRequest, ?boolean): Promise<mixed>,
@@ -95,6 +98,7 @@ export default class WorkerFarm extends EventEmitter {
     }
 
     if (this.options.useLocalWorker) {
+      // $FlowFixMe ???
       this.localWorker = worker;
     }
     this.run = this.createHandle('run');
@@ -260,6 +264,7 @@ export default class WorkerFarm extends EventEmitter {
     if (handleId != null) {
       mod = nullthrows(this.handles.get(handleId)).fn;
     } else if (location) {
+      // $FlowFixMe
       if (process.browser) {
         if (location.endsWith('@parcel/workers/src/bus.js')) {
           mod = bus;
@@ -291,6 +296,7 @@ export default class WorkerFarm extends EventEmitter {
     let result;
     if (method == null) {
       try {
+        // $FlowFixMe ???
         result = responseFromContent(await mod(...args));
       } catch (e) {
         result = errorResponseFromError(e);
@@ -490,10 +496,14 @@ export default class WorkerFarm extends EventEmitter {
   }
 
   static getNumWorkers() {
-    return navigator.hardwareConcurrency / 2;
-    // return process.env.PARCEL_WORKERS
-    //   ? parseInt(process.env.PARCEL_WORKERS, 10)
-    //   : cpuCount();
+    // $FlowFixMe
+    if (process.browser) {
+      return navigator.hardwareConcurrency / 2;
+    } else {
+      return process.env.PARCEL_WORKERS
+        ? parseInt(process.env.PARCEL_WORKERS, 10)
+        : cpuCount();
+    }
   }
 
   static isWorker() {

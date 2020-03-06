@@ -8,10 +8,12 @@ import {generateBundleReport} from '@parcel/utils';
 // TODO
 
 /* eslint-disable no-console */
-const writeToStdout =
-  globalThis.PARCEL_JSON_LOGGER_STDOUT || makeWriter(console.log);
-const writeToStderr =
-  globalThis.PARCEL_JSON_LOGGER_STDERR || makeWriter(console.error);
+const writeToStdout = /*globalThis.PARCEL_JSON_LOGGER_STDOUT ||*/ makeWriter(
+  console.log,
+);
+const writeToStderr = /*globalThis.PARCEL_JSON_LOGGER_STDERR ||*/ makeWriter(
+  console.error,
+);
 /* eslint-enable no-console */
 
 const LOG_LEVELS = {

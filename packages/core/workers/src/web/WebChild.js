@@ -1,4 +1,5 @@
 // @flow
+/* eslint-env worker*/
 
 import type {
   ChildImpl,
@@ -24,6 +25,7 @@ export default class WebChild implements ChildImpl {
       throw new Error('Only create WebChild instances in a worker!');
     }
 
+    // $FlowFixMe ???
     this.onMessage = ({data}) => onMessage(data);
     this.onExit = onExit;
     self.onmessage = data => this.handleMessage(data);

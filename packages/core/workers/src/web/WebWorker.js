@@ -31,6 +31,7 @@ export default class WebWorker implements WorkerImpl {
   start() {
     this.worker = new Worker('./WebChild.js');
 
+    // $FlowFixMe ???
     this.worker.onmessage = ({data}) => this.handleMessage(data);
     this.worker.onerror = this.onError;
     // this.worker.on('exit', this.onExit);

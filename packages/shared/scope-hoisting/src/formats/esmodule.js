@@ -7,7 +7,9 @@ import type {
   PluginOptions,
   Symbol,
 } from '@parcel/types';
+import type {Scope} from '@babel/traverse';
 import type {ExternalModule} from '../types';
+
 import * as t from '@babel/types';
 import {relativeBundlePath} from '@parcel/utils';
 import nullthrows from 'nullthrows';
@@ -21,6 +23,7 @@ export function generateBundleImports(
   from: Bundle,
   bundle: Bundle,
   assets: Set<Asset>,
+  scope: Scope, // eslint-disable-line no-unused-vars
 ) {
   let specifiers = [...assets].map(asset => {
     let id = t.identifier(assertString(asset.meta.exportsIdentifier));
@@ -38,6 +41,7 @@ export function generateBundleImports(
 export function generateExternalImport(
   bundle: Bundle,
   external: ExternalModule,
+  scope: Scope, // eslint-disable-line no-unused-vars
 ) {
   let {source, specifiers, isCommonJS} = external;
   let defaultSpecifier = null;

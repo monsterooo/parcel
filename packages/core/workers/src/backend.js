@@ -4,7 +4,9 @@ import type {BackendType, WorkerImpl} from './types';
 import WebWorker from './web/WebWorker';
 
 export function detectBackend(): BackendType {
+  // $FlowFixMe
   if (process.browser) return 'web';
+  throw new Error('No backend available');
 
   // switch (process.env.PARCEL_WORKER_BACKEND) {
   //   case 'threads':

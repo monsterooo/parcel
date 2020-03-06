@@ -20,6 +20,7 @@ export default async function babel7(
   // If this is an internally generated config, use our internal @babel/core,
   // otherwise require a local version from the package we're compiling.
   let babel =
+    // $FlowFixMe
     babelOptions.internal || process.browser
       ? bundledBabelCore
       : await options.packageManager.require('@babel/core', asset.filePath, {

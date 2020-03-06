@@ -43,6 +43,7 @@ export async function load(
     }
   }
 
+  // $FlowFixMe
   let babelCore = process.browser
     ? bundledBabelCore
     : await options.packageManager.require('@babel/core', config.searchPath, {
@@ -257,6 +258,7 @@ async function definePluginDependencies(config) {
 
 export async function postDeserialize(config: Config, options: PluginOptions) {
   let babelCore =
+    // $FlowFixMe
     config.result.internal || process.browser
       ? bundledBabelCore
       : await options.packageManager.require('@babel/core', config.searchPath);

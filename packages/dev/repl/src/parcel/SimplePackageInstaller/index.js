@@ -193,10 +193,14 @@ export default class SimplePackageInstaller implements PackageInstaller {
       let nodeModules = path.resolve(path.dirname(pkgPath), 'node_modules');
 
       let pkg = JSON.parse(await this.fs.readFile(pkgPath, 'utf8'));
-      let dependencies = [pkg.dependencies, dev && pkg.devDependencies]
+      // $FlowFixMe
+      let dependencies: Array<[string, string]> = [
+        pkg.dependencies,
+        dev && pkg.devDependencies,
+      ]
         .filter(Boolean)
-        .map(Object.entries)
         // $FlowFixMe
+        .map(v => (Object.entries(v): Array<[string, string]>))
         .flat(1);
 
       // if (only) {
