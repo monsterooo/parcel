@@ -948,6 +948,19 @@
   dependencies:
     commander "^2.15.1"
 
+"@codemirror/next@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@codemirror/next/-/next-0.4.0.tgz#cf6aeebc5dbd29fa23bc113e518d73d985497eee"
+  integrity sha512-DEEauaL6UH5+efIkgYTbkDiVKmEc+ryfsScN9IA8y9WrONONWMTR3Te8QsK+4nIL1qBEdjjj+i0e4cNBrMMSWg==
+  dependencies:
+    lezer "^0.7.0"
+    lezer-css "^0.7.0"
+    lezer-html "^0.7.0"
+    lezer-javascript "^0.7.0"
+    lezer-tree "^0.7.0"
+    style-mod "^2.2.0"
+    w3c-keyname "^2.1.1"
+
 "@evocateur/libnpmaccess@^3.1.2":
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/@evocateur/libnpmaccess/-/libnpmaccess-3.1.2.tgz#ecf7f6ce6b004e9f942b098d92200be4a4b1c845"
@@ -1753,6 +1766,11 @@
   version "1.5.5"
   resolved "https://registry.yarnpkg.com/@mdx-js/util/-/util-1.5.5.tgz#6f88bcb847ebd0117fc81bcd26b83220062fd881"
   integrity sha512-IudQkyZuM8T1CrSX9r0ShPXCABjtEtyrV4lxQqhKAwFqw1aYpy/5LOZhitMLoJTybZPVdPotuh+zjqYy9ZOSbA==
+
+"@mischnic/codemirror-preact@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@mischnic/codemirror-preact/-/codemirror-preact-0.0.3.tgz#f54e7fbebb5aee975bc24ed799d164d0eb4a9a2a"
+  integrity sha512-YtmbIdkuB40lf5odsoEE1sJ58djqtHClXRh5W56rNEzJtVJi1/vsrEgL5xRaSlAj0J0if9wB9oT2FhmxuXtjfw==
 
 "@mischnic/pako@^1.0.10":
   version "1.0.10"
@@ -3971,6 +3989,11 @@ combined-stream@^1.0.6, combined-stream@~1.0.6:
   integrity sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==
   dependencies:
     delayed-stream "~1.0.0"
+
+comlink@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/comlink/-/comlink-4.2.0.tgz#be9e968a19d797a44a042cf1eac03775d2ed39fe"
+  integrity sha512-33hF3yYzZicIWLREuvluTGSZkbAXYwRmrA9IYQo0/P+0O45qgvzR0FHX4tRZztObFMTs/RhnN0G0UBNDAZSiCg==
 
 comma-separated-tokens@^1.0.0:
   version "1.0.7"
@@ -8224,6 +8247,39 @@ levn@^0.3.0, levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
+lezer-css@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/lezer-css/-/lezer-css-0.7.0.tgz#0156d84eb40a71bb2b619403dc264d6994ea35ab"
+  integrity sha512-bGhsaoXiwLjR7AXouoSndUp8K4ZHaEK9BcS6aj4+NGkevzFkgTfxs4tpmM7tMYz1R3UFoZpUlAiWZjTR3hqHdA==
+  dependencies:
+    lezer "^0.7.0"
+
+lezer-html@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/lezer-html/-/lezer-html-0.7.0.tgz#df1639297ddda4535968c8139a882453be62bfa4"
+  integrity sha512-2zV4f3vFeF1pQ6EcNTyuBchr7EdQc9+VuYDEfhaeOjfpT1d3tbUwDNRybB52LnEBEYj2uQ9B/5kejry69WJ3PQ==
+  dependencies:
+    lezer "^0.7.0"
+
+lezer-javascript@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/lezer-javascript/-/lezer-javascript-0.7.0.tgz#425f974014192ed4655b1c8e8723e37c444bcfb2"
+  integrity sha512-lRvwu/7z/xy/z8XMgXJxMBD8skcDbLwDoBQzlLN/2uNsxegq4stfyTp0Scm6/ti6054JeB6UcoVDzGLxl7uFNQ==
+  dependencies:
+    lezer "^0.7.0"
+
+lezer-tree@^0.7.0, lezer-tree@^0.7.1:
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/lezer-tree/-/lezer-tree-0.7.1.tgz#39f40bb7558c8ab074964851a0652f1cdea1e815"
+  integrity sha512-qmlK2rWa6g24IpFsVooTL4oc/Xgtsv7n/1O3gua/k9bbwspL5Pkd/Gfjz2Sgab9zrdiif2+wVgRk9RfBIUvWhQ==
+
+lezer@^0.7.0:
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/lezer/-/lezer-0.7.1.tgz#dd33e667c67590f927555418a302e39780ffd87c"
+  integrity sha512-H3Fgy7W2PGR8Z6vJoXblkWlgIm6kTO81baR2P7qi6fgHM2q5qPSr2O+G1hBCXk1hYRy6RaS9D6Pq3xLbgc8Hyg==
+  dependencies:
+    lezer-tree "^0.7.1"
+
 liftoff@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/liftoff/-/liftoff-3.1.0.tgz#c9ba6081f908670607ee79062d700df062c52ed3"
@@ -10645,6 +10701,11 @@ posthtml@^0.12.0:
     posthtml-parser "^0.4.1"
     posthtml-render "^1.1.5"
 
+preact@^10.3.3:
+  version "10.3.3"
+  resolved "https://registry.yarnpkg.com/preact/-/preact-10.3.3.tgz#31a949cdc89dd1cf72bc2b94f80ad55d1ac8c7e6"
+  integrity sha512-8EWUuHuLhX48uK0acnnXwBL/ZyrgeadnyhxG6hFI85BhwmquyGwWzfj2SylCNdEyltkdgbY3FZzQOM2mG1leAg==
+
 prebuild-install@^5.2.5:
   version "5.3.3"
   resolved "https://registry.yarnpkg.com/prebuild-install/-/prebuild-install-5.3.3.tgz#ef4052baac60d465f5ba6bf003c9c1de79b9da8e"
@@ -12502,6 +12563,11 @@ structured-source@^3.0.2:
   dependencies:
     boundary "^1.0.1"
 
+style-mod@^2.2.0:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/style-mod/-/style-mod-2.2.1.tgz#2cd29e3e2b804563107ccca2a200c7c1667144c6"
+  integrity sha512-otrZ/chTK4xAB9UctuCTId8JkuXbhOnrVW3T322GMf1XhMw8AnSV4VxIycVYCKuHm0uJMjBcRNYoo0A38ECh/Q==
+
 style-to-object@0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/style-to-object/-/style-to-object-0.3.0.tgz#b1b790d205991cc783801967214979ee19a76e46"
@@ -13961,6 +14027,11 @@ w3c-hr-time@^1.0.1:
   integrity sha1-gqwr/2PZUOqeMYmlimViX+3xkEU=
   dependencies:
     browser-process-hrtime "^0.1.2"
+
+w3c-keyname@^2.1.1:
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/w3c-keyname/-/w3c-keyname-2.2.2.tgz#7ea63170454bb19f1a3c6b628fc3dc8889276e91"
+  integrity sha512-8Vs/aVwcy0IJACaPm4tyzh1fzehZE70bGSjEl3dDms5UXtWnaBElrSHC8lDDeak0Gk5jxKOFstL64/65o7Ge2A==
 
 w3c-xmlserializer@^1.1.2:
   version "1.1.2"
