@@ -1,17 +1,20 @@
 // @flow
-import teleport from 'teleport-javascript';
+import * as teleport from 'teleport-javascript';
 
-let _serialize, _deserialize;
-try {
-  const v8 = require('v8');
-  // $FlowFixMe - flow doesn't know about this method yet
-  _serialize = v8.serialize;
-  // $FlowFixMe - flow doesn't know about this method yet
-  _deserialize = v8.deserialize;
-} catch (_) {
-  const {parse, stringify} = teleport;
-  _serialize = v => Buffer.from(stringify(v));
-  _deserialize = v => parse(v.toString('utf8'));
+let _serialize = v => Buffer.from(teleport.stringify(v)),
+  _deserialize = v => teleport.parse(v.toString('utf8'));
+
+// $FlowFixMe - flow doesn't know about this method yet
+if (!process.browser) {
+  try {
+    const v8 = require('v8');
+    // $FlowFixMe - flow doesn't know about this method yet
+    _serialize = v8.serialize;
+    // $FlowFixMe - flow doesn't know about this method yet
+    _deserialize = v8.deserialize;
+
+    // eslint-disable-next-line no-empty
+  } catch (_) {}
 }
 
 const nameToCtor: Map<string, Class<*>> = new Map();

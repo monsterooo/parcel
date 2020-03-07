@@ -337,7 +337,7 @@ function App() {
           }
         })()}
         {installPrompt && (
-          <button class="installPrompt" onClick={promptInstallCb}>
+          <button class="installPrompt" onClick={promptInstallCb} disabled>
             Want to add this to your homescreen?
           </button>
         )}

@@ -4,7 +4,7 @@
   "license": "MIT",
   "private": true,
   "default": "dist/index.html",
-  "source": "src/index.html",
+  "source": "src-standalone/index.html",
   "scripts": {
     "build": "parcel2 build . --no-source-maps"
   },
