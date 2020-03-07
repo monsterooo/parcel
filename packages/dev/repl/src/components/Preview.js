@@ -1,7 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import {h, Component, Fragment, createRef} from 'preact';
 import path from 'path';
-// eslint-disable-next-line no-unused-vars
 import {Box} from './helper';
 
 function wrapperFor(scriptURL) {

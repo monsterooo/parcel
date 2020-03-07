@@ -1,44 +1,61 @@
 // eslint-disable-next-line no-unused-vars
 import {h} from 'preact';
-// eslint-disable-next-line no-unused-vars
+import {memo} from 'preact/compat';
+import {useCallback} from 'preact/hooks';
 import Editor from './Editor';
-// eslint-disable-next-line no-unused-vars
 import {Box} from './helper';
 
-const Asset = props => {
-  const {
+const Asset = memo(function Asset({
+  name,
+  content,
+  isEntry,
+  editable,
+  onChangeName,
+  onChangeContent,
+  onChangeEntry,
+  onClickRemove,
+  additionalHeader,
+}) {
+  const changeName = useCallback(e => onChangeName(name, e.target.value), [
     name,
-    content,
-    isEntry,
-    editable,
     onChangeName,
+  ]);
+  const changeContent = useCallback(content => onChangeContent(name, content), [
+    name,
     onChangeContent,
+  ]);
+  const changeEntry = useCallback(e => onChangeEntry(name, e.target.checked), [
+    name,
     onChangeEntry,
+  ]);
+  const clickRemove = useCallback(() => onClickRemove(name), [
+    name,
     onClickRemove,
-    additionalHeader,
-  } = props;
+  ]);
 
   if (editable) {
     return (
       <Box
         header={[
           <input
+            key="filename"
             type="text"
             class="filename"
             spellcheck="false"
-            onInput={e => onChangeName(e.target.value)}
+            onInput={changeName}
             value={name}
             aria-label="Asset filename"
           />,
           additionalHeader,
           <input
+            key="setEntry"
             type="checkbox"
             class="setEntry"
             title="Entrypoint"
             checked={isEntry}
-            onChange={e => onChangeEntry(e.target.checked)}
+            onChange={changeEntry}
           />,
-          <button class="remove" onClick={() => onClickRemove(name)}>
+          <button key="remove" class="remove" onClick={clickRemove}>
             -
           </button>,
         ]}
@@ -46,7 +63,7 @@ const Asset = props => {
         <Editor
           filename={name}
           content={content}
-          onChange={onChangeContent}
+          onChange={changeContent}
           editable
         />
       </Box>
@@ -55,7 +72,13 @@ const Asset = props => {
     return (
       <Box
         header={[
-          <input type="text" class="filename" readonly value={name} />,
+          <input
+            key="filename"
+            type="text"
+            class="filename"
+            readonly
+            value={name}
+          />,
           additionalHeader,
         ]}
       >
@@ -63,6 +86,6 @@ const Asset = props => {
       </Box>
     );
   }
-};
+});
 
 export default Asset;

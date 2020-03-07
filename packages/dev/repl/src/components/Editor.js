@@ -1,22 +1,16 @@
 // eslint-disable-next-line no-unused-vars
-import {useCallback, useMemo} from 'preact/hooks';
 import {h} from 'preact';
-import path from 'path';
-import mime from 'mime-types';
+import {useCallback, useMemo} from 'preact/hooks';
+import {memo} from 'preact/compat';
+//import path from 'path';
 
 // eslint-disable-next-line no-unused-vars
 import {Codemirror} from '@mischnic/codemirror-preact';
 
 import {lineNumbers} from '@codemirror/next/gutter';
 import {keymap} from '@codemirror/next/keymap';
-import {
-  history,
-  redo,
-  redoSelection,
-  undo,
-  undoSelection,
-} from '@codemirror/next/history';
-import {foldCode, unfoldCode, foldGutter} from '@codemirror/next/fold';
+import {history, redo, undo} from '@codemirror/next/history';
+import {foldGutter} from '@codemirror/next/fold';
 import {baseKeymap, indentSelection} from '@codemirror/next/commands';
 import {bracketMatching} from '@codemirror/next/matchbrackets';
 import {closeBrackets} from '@codemirror/next/closebrackets';
@@ -34,14 +28,14 @@ import {css} from '@codemirror/next/lang-css';
 //import Linter from "eslint4b-prebuilt";
 //import { linter, openLintPanel } from "@codemirror/next/lint";
 
-export default function Editor({filename, editable, content, onChange}) {
+const Editor = memo(function Editor({filename, editable, content, onChange}) {
   const onTextChange =
     onChange &&
     useCallback(view => onChange(view.state.doc.toString()), [onChange]);
 
   // TODO t373 ?
   //let extension = path.extname(filename).slice(1);
-  let extension = filename.split('.').splice(-1);
+  let extension = filename.split('.').splice(-1)[0];
 
   const extensions = useMemo(
     () =>
@@ -67,9 +61,9 @@ export default function Editor({filename, editable, content, onChange}) {
         keymap({
           'Mod-z': undo,
           'Mod-Shift-z': redo,
+          Tab: indentSelection,
           // "Mod-u": view => undoSelection(view) || true,
           // [ /Mac/.test(navigator.platform) ? "Mod-Shift-u" : "Alt-u"]: redoSelection,
-          // Tab: indentSelection,
           // "Ctrl-Space": startCompletion
           // "Shift-Mod-m": openLintPanel
         }),
@@ -86,4 +80,6 @@ export default function Editor({filename, editable, content, onChange}) {
       readOnly={!editable}
     />
   );
-}
+});
+
+export default Editor;

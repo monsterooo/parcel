@@ -1,3 +1,6 @@
+// @flow
+import type {MemoryFS} from '@parcel/fs';
+
 import {expose} from 'comlink';
 import Parcel from '@parcel/core';
 // import SimplePackageInstaller from './SimplePackageInstaller';
@@ -14,7 +17,8 @@ expose({
 
 async function bundle(assets, options) {
   // $FlowFixMe
-  globalThis.PARCEL_DUMP_GRAPHVIZ = true;
+  globalThis.PARCEL_DUMP_GRAPHVIZ = options.showGraphs;
+
   // globalThis.PARCEL_JSON_LOGGER_STDOUT = async d => {
   //   switch (d.type) {
   //     case 'buildStart':
@@ -48,11 +52,13 @@ async function bundle(assets, options) {
   // };
   // globalThis.PARCEL_JSON_LOGGER_STDERR = globalThis.PARCEL_JSON_LOGGER_STDOUT;
 
-  let entries = assets.filter(v => v.isEntry).map(v => `/src/${v.name}`);
+  // $FlowFixMe
+  let fs: MemoryFS = memFS;
 
+  let entries = assets.filter(v => v.isEntry).map(v => `/src/${v.name}`);
   const b = new Parcel({
     entries,
-    disableCache: true,
+    disableCache: false,
     mode: 'production',
     minify: options.minify,
     logLevel: 'verbose',
@@ -62,8 +68,8 @@ async function bundle(assets, options) {
       filePath: '/',
     },
     hot: false,
-    inputFS: memFS,
-    outputFS: memFS,
+    inputFS: fs,
+    outputFS: fs,
     patchConsole: false,
     scopeHoist: options.scopeHoist,
     workerFarm,
@@ -77,22 +83,22 @@ async function bundle(assets, options) {
     },
   });
 
-  await memFS.mkdirp('/src');
-  await memFS.writeFile(
+  await fs.mkdirp('/src');
+  await fs.writeFile(
     '/package.json',
     JSON.stringify({
       engines: {node: '12'},
     }),
   );
   for (let {name, content} of assets) {
-    await memFS.writeFile(`/src/${name}`, content);
+    await fs.writeFile(`/src/${name}`, content);
   }
 
   await b.run();
 
   let output = [];
-  for (let name of await memFS.readdir(`/dist`)) {
-    output.push({name, content: await memFS.readFile(`/dist/${name}`, 'utf8')});
+  for (let name of await fs.readdir(`/dist`)) {
+    output.push({name, content: await fs.readFile(`/dist/${name}`, 'utf8')});
   }
 
   return output;

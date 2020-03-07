@@ -1,4 +1,3 @@
-// @flow
 import Parcel from '@parcel/core';
 // import SimplePackageInstaller from './SimplePackageInstaller';
 // import {NodePackageManager} from '@parcel/package-manager';

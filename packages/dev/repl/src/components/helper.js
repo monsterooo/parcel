@@ -32,7 +32,7 @@ export function Notes() {
       Note:
       <ul>
         <li>
-          PostHTML's <code>removeUnusedCss</code> is disabled for a smaller
+          PostHTML&apos;s <code>removeUnusedCss</code> is disabled for a smaller
           bundle size
         </li>
       </ul>
@@ -40,7 +40,7 @@ export function Notes() {
       <ul>
         <li>
           Bundle loaders (async import, importing CSS in JS) lock up the
-          bundler, caused by Parcel's <code>require.resolve</code> handling
+          bundler, caused by Parcel&apos;s <code>require.resolve</code> handling
         </li>
         <li>
           Currently patching <code>sass</code> because of{' '}
@@ -50,7 +50,7 @@ export function Notes() {
         </li>
         <li>
           Currently patching <code>htmlnano</code> because its{' '}
-          <code>require</code> calls aren't statically analyzeable
+          <code>require</code> calls aren&apos;t statically analyzeable
         </li>
       </ul>
     </div>

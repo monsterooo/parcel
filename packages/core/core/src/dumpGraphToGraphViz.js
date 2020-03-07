@@ -30,12 +30,12 @@ export default function dumpGraphToGraphViz(
   name: string,
 ): void {
   if (
-    process.env.PARCEL_BUILD_ENV === 'production' &&
-    process.env.PARCEL_DUMP_GRAPHVIZ == null &&
     // $FlowFixMe
-    globalThis.PARCEL_DUMP_GRAPHVIZ == null &&
-    // $FlowFixMe
-    !process.browser
+    process.browser
+      ? // $FlowFixMe
+        !globalThis.PARCEL_DUMP_GRAPHVIZ
+      : process.env.PARCEL_BUILD_ENV === 'production' &&
+        process.env.PARCEL_DUMP_GRAPHVIZ == null
   ) {
     return;
   }
