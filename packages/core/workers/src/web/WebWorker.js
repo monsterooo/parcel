@@ -9,6 +9,8 @@ import type {
 } from '../types';
 import {prepareForSerialization, restoreDeserializedObject} from '@parcel/core';
 
+let id = 0;
+
 export default class WebWorker implements WorkerImpl {
   execArgv: Object;
   onMessage: MessageHandler;
@@ -29,7 +31,7 @@ export default class WebWorker implements WorkerImpl {
   }
 
   start() {
-    this.worker = new Worker('./WebChild.js');
+    this.worker = new Worker('./WebChild.js', {name: `Parcel Worker ${id++}`});
 
     // $FlowFixMe ???
     this.worker.onmessage = ({data}) => this.handleMessage(data);

@@ -235,6 +235,7 @@ export class RequestGraph extends Graph<
           node,
           'invalidated_by_update',
         )) {
+          // console.log('fs invalidate', this, node, connectedNode);
           this.invalidateNode(connectedNode);
         }
       } else if (type === 'create') {
@@ -248,6 +249,7 @@ export class RequestGraph extends Graph<
               'invalidated_by_create',
             );
             for (let connectedNode of connectedNodes) {
+              // console.log('fs invalidate', this, connectedNode);
               this.invalidateNode(connectedNode);
             }
           }
@@ -262,6 +264,7 @@ export class RequestGraph extends Graph<
       }
     }
 
+    // console.log('invalidated list', this.invalidNodeIds);
     return this.invalidNodeIds.size > 0;
   }
 }

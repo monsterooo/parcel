@@ -158,6 +158,12 @@ export default class AssetGraphBuilder extends EventEmitter {
     assetGraph: AssetGraph,
     changedAssets: Map<string, Asset>,
   |}> {
+    // console.log(
+    //   'build',
+    //   this.requestTracker.graph,
+    //   this.requestTracker.graph.invalidNodeIds,
+    //   this.requestTracker.hasInvalidRequests(),
+    // );
     this.rejected = new Map();
     let lastQueueError;
     for (let currPriorities of requestPriorities) {
@@ -167,6 +173,7 @@ export default class AssetGraphBuilder extends EventEmitter {
 
       let promises = [];
       for (let request of this.requestTracker.getInvalidRequests()) {
+        // console.log('build invalid', request);
         // $FlowFixMe
         let assetGraphBuildRequest: AssetGraphBuildRequest = (request: any);
         if (currPriorities.includes(request.type)) {

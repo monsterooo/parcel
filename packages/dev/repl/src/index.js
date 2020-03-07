@@ -8,7 +8,7 @@ import {h, render, Fragment} from 'preact';
 import {useState, useEffect, useCallback, useReducer} from 'preact/hooks';
 import Asset from './components/Asset';
 import Options from './components/Options';
-import Preview from './components/Preview';
+// import Preview from './components/Preview';
 import {ParcelError, Notes} from './components/helper';
 
 import filesize from 'filesize';
@@ -46,6 +46,8 @@ function assetsReducer(assets, action) {
     if (prop === 'name' && assets.find(a => a.name === value)) {
       return assets;
     } else {
+      if (prop === 'content')
+        assets = updateAssets(assets, name, 'time', Date.now());
       return updateAssets(assets, name, prop, value);
     }
   } else if (action.type === 'removeAsset') {
@@ -239,8 +241,9 @@ function App() {
 
   const addAssetCb = useCallback(() => assets(assetsReducer.add()), []);
 
-  const changeOptionsCb = useCallback((name, value) =>
-    setOptions(optionsReducer.update(name, value)),
+  const changeOptionsCb = useCallback(
+    (name, value) => setOptions(optionsReducer.update(name, value)),
+    [],
   );
 
   const promptInstallCb = useCallback(async () => {
@@ -297,7 +300,7 @@ function App() {
       </div>
       <div class="row">
         {workerState ? (
-          <div class="loadState ready">Parcel is ready</div>
+          <div class="loadState ready">Parcel is ready ?</div>
         ) : (
           <div class="loadState loading">Parcel is being loaded...</div>
         )}
@@ -317,7 +320,7 @@ function App() {
                     }
                   />
                 ))}
-                <Preview assets={assets} output={output} options={options} />
+                {/* <Preview assets={assets} output={output} options={options} /> */}
               </Fragment>
             ) : (
               <div class="file gettingStarted">

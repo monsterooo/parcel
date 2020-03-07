@@ -5,10 +5,34 @@ import {expose} from 'comlink';
 import Parcel from '@parcel/core';
 // import SimplePackageInstaller from './SimplePackageInstaller';
 // import {NodePackageManager} from '@parcel/package-manager';
-import defaultConfig from '@parcel/config-default';
+// import defaultConfig from '@parcel/config-default';
 import memFS from 'fs';
 import workerFarm from '../../workerFarm.js';
 // import {prettifyTime} from '@parcel/utils';
+
+const defaultConfig = {
+  bundler: '@parcel/bundler-default',
+  transformers: {
+    '*.{js,mjs,jsm,jsx,es6,ts,tsx}': ['@parcel/transformer-js'],
+    'url:*': ['@parcel/transformer-raw'],
+  },
+  namers: ['@parcel/namer-default'],
+  runtimes: {
+    browser: ['@parcel/runtime-js'],
+    'service-worker': ['@parcel/runtime-js'],
+    'web-worker': ['@parcel/runtime-js'],
+    node: ['@parcel/runtime-js'],
+  },
+  optimizers: {
+    '*.js': ['@parcel/optimizer-terser'],
+  },
+  packagers: {
+    '*.js': '@parcel/packager-js',
+    '*': '@parcel/packager-raw',
+  },
+  resolvers: ['@parcel/resolver-default'],
+  reporters: ['@parcel/reporter-json'],
+};
 
 expose({
   bundle,
@@ -43,7 +67,7 @@ async function bundle(assets, options) {
   //           await memFS.readFile(filePath, 'utf8'),
   //         );
   //       }
-  //       console.groupEnd('Output');
+  //       console.groupEnd();
   //       break;
   //     case 'buildFailure':
   //       console.log(`❗️`, d.diagnostics);
@@ -53,12 +77,14 @@ async function bundle(assets, options) {
   // globalThis.PARCEL_JSON_LOGGER_STDERR = globalThis.PARCEL_JSON_LOGGER_STDOUT;
 
   // $FlowFixMe
+  globalThis.memFS = memFS;
+  // $FlowFixMe
   let fs: MemoryFS = memFS;
 
   let entries = assets.filter(v => v.isEntry).map(v => `/src/${v.name}`);
   const b = new Parcel({
     entries,
-    disableCache: false,
+    disableCache: true,
     mode: 'production',
     minify: options.minify,
     logLevel: 'verbose',
@@ -83,16 +109,17 @@ async function bundle(assets, options) {
     },
   });
 
-  await fs.mkdirp('/src');
   await fs.writeFile(
     '/package.json',
     JSON.stringify({
       engines: {node: '12'},
     }),
   );
+  await fs.mkdirp('/src');
   for (let {name, content} of assets) {
     await fs.writeFile(`/src/${name}`, content);
   }
+  await fs.rimraf(`/dist`);
 
   await b.run();
 

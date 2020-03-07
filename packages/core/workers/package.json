@@ -27,7 +27,7 @@
   },
   "browser": {
     "./src/cpuCount.js": false,
-    "./src/process/ProcessWorker": false,
+    "./src/process/ProcessWorker.js": false,
     "./src/threads/ThreadsWorker.js": false
   }
 }

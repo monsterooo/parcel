@@ -1,5 +1,6 @@
 // @flow
 import * as teleport from 'teleport-javascript';
+import {Buffer} from 'buffer';
 
 let _serialize = v => Buffer.from(teleport.stringify(v)),
   _deserialize = v => teleport.parse(v.toString('utf8'));
@@ -204,7 +205,9 @@ export function restoreDeserializedObject(object: any) {
       let ctor = nameToCtor.get(value.$$type);
       if (ctor == null) {
         throw new Error(
-          `Expected constructor ${value.$$type} to be registered with serializer to deserialize`,
+          `Expected constructor ${
+            value.$$type
+          } to be registered with serializer to deserialize`,
         );
       }
 

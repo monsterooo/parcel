@@ -1,19 +1,31 @@
 // @flow strict-local
+/* global globalThis:readonly */
 import type {BuildProgressEvent, LogEvent} from '@parcel/types';
 import type {BundleReport} from '@parcel/utils';
 
 import {Reporter} from '@parcel/plugin';
 import {generateBundleReport} from '@parcel/utils';
 
-// TODO
+const logWriter = makeWriter(console.log);
+const errorWriter = makeWriter(console.error);
 
 /* eslint-disable no-console */
-const writeToStdout = /*globalThis.PARCEL_JSON_LOGGER_STDOUT ||*/ makeWriter(
-  console.log,
-);
-const writeToStderr = /*globalThis.PARCEL_JSON_LOGGER_STDERR ||*/ makeWriter(
-  console.error,
-);
+const writeToStdout = (d, filter) => {
+  // $FlowFixMe
+  if (globalThis.PARCEL_JSON_LOGGER_STDOUT) {
+    globalThis.PARCEL_JSON_LOGGER_STDOUT(d, filter);
+  } else {
+    logWriter(d, filter);
+  }
+};
+const writeToStderr = (d, filter) => {
+  // $FlowFixMe
+  if (globalThis.PARCEL_JSON_LOGGER_STDOUT) {
+    globalThis.PARCEL_JSON_LOGGER_STDERR(d, filter);
+  } else {
+    errorWriter(d, filter);
+  }
+};
 /* eslint-enable no-console */
 
 const LOG_LEVELS = {
