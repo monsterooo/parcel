@@ -33,23 +33,6 @@ const WORKER_STATE_ERROR = Symbol('WORKER_STATE_ERROR');
 
 const DEFAULT_PRESET = 'Javascript';
 
-/*
-    this.hashDebouncer = createDebouncer(
-      that =>
-        saveState(
-          that.state.currentPreset,
-          that.state.options,
-          that.state.assets,
-        ),
-      400,
-      this,
-    );
-
-    workerLoaded.then(() =>
-      this.setState({workerState: true}),
-    );
-*/
-
 const hashState = loadState() || {};
 
 function App() {
@@ -59,7 +42,7 @@ function App() {
   const [options, setOptions] = useState(
     hashState.options || {
       minify: false,
-      noScopeHoist: false,
+      scopeHoist: true,
       sourceMaps: false,
       publicUrl: '',
       targetType: 'browser',

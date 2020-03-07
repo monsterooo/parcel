@@ -13,11 +13,11 @@ export default function Options({values, onChange, enableBrowserslist}) {
         />
       </label>
       <label title="Corresponds `--no-scope-hoist`">
-        <span>Disable Scope Hoisting</span>
+        <span>Enable Scope Hoisting</span>
         <input
           type="checkbox"
-          checked={values.noScopeHoist}
-          onChange={e => onChange('noScopeHoist', e.target.checked)}
+          checked={values.scopeHoist}
+          onChange={e => onChange('scopeHoist', e.target.checked)}
         />
       </label>
       <label title="Corresponds to `--no-source-maps`">

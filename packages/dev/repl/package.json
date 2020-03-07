@@ -3,7 +3,8 @@
   "version": "2.0.0-alpha.3.2",
   "license": "MIT",
   "private": true,
-  "source": "src-standalone/index.html",
+  "default": "dist/index.html",
+  "source": "src/index.html",
   "scripts": {
     "build": "parcel2 build . --no-source-maps"
   },
@@ -24,5 +25,8 @@
     "fs": "./fs.js",
     "@parcel/watcher": false
   },
-  "browserslist": "Chrome 75"
+  "browserslist": "Chrome 75",
+  "targets": {
+    "default": {}
+  }
 }

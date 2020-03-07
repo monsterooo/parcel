@@ -34,18 +34,15 @@ import {css} from '@codemirror/next/lang-css';
 //import Linter from "eslint4b-prebuilt";
 //import { linter, openLintPanel } from "@codemirror/next/lint";
 
-export default function Editor({
-  filename,
-  editable,
-  content,
-  onChange = () => {},
-}) {
-  const onTextChange = useCallback(
-    view => onChange(view.state.doc.toString()),
-    [onChange],
-  );
+export default function Editor({filename, editable, content, onChange}) {
+  const onTextChange =
+    onChange &&
+    useCallback(view => onChange(view.state.doc.toString()), [onChange]);
 
-  let extension = path.extname(filename).slice(1);
+  // TODO t373 ?
+  //let extension = path.extname(filename).slice(1);
+  let extension = filename.split('.').splice(-1);
+
   const extensions = useMemo(
     () =>
       [
