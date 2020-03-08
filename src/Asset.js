@@ -75,6 +75,7 @@ class Asset {
     await this.loadIfNeeded();
 
     if (this.contents && this.mightHaveDependencies()) {
+      // READ 如果可能有依赖则分析收集依赖
       await this.parseIfNeeded();
       await this.collectDependencies();
     }
@@ -201,9 +202,9 @@ class Asset {
     }
 
     if (!this.generated) {
-      await this.loadIfNeeded();
-      await this.pretransform();
-      await this.getDependencies();
+      await this.loadIfNeeded(); // READ 从硬盘加载数据
+      await this.pretransform(); // READ 转换之前
+      await this.getDependencies(); // READ 获取依赖
       await this.transform();
       this.generated = await this.generate();
     }

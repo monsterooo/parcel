@@ -193,7 +193,7 @@ async function bundle(main, command) {
   if (command.name() === 'watch') {
     command.watch = true;
   }
-
+  process.env.PARCEL_WORKERS = 1; // READ https://github.com/parcel-bundler/parcel/wiki/Contributing
   if (command.name() === 'build') {
     command.production = true;
     process.env.NODE_ENV = process.env.NODE_ENV || 'production';

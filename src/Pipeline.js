@@ -17,7 +17,7 @@ class Pipeline {
     }
 
     let asset = this.parser.getAsset(path, options);
-    let generated = await this.processAsset(asset);
+    let generated = await this.processAsset(asset); // READ 代码进行了编译
     let generatedMap = {};
     for (let rendition of generated) {
       generatedMap[rendition.type] = rendition.value;

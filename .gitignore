@@ -9,7 +9,6 @@ coverage
 dist
 lib
 !test/**/node_modules
-.vscode/
 .idea/
 *.min.js
 test/integration/**/elm-stuff

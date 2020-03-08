@@ -11,5 +11,5 @@ dist
 /test/dist
 /test/input
 *.min.js
-
+/debug
 coverage

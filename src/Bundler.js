@@ -529,7 +529,7 @@ class Bundler extends EventEmitter {
         this.cache.invalidate(asset.name);
       }
     }
-
+    // READ 加载资源和分析依赖的关键点。尝试从这里入手理解
     await this.loadAsset(asset);
   }
 
@@ -550,7 +550,7 @@ class Bundler extends EventEmitter {
     let processed = this.cache && (await this.cache.read(asset.name));
     let cacheMiss = false;
     if (!processed || asset.shouldInvalidate(processed.cacheData)) {
-      processed = await this.farm.run(asset.name);
+      processed = await this.farm.run(asset.name); // READ 这里返回的值是分析过代码依赖的。值得关注
       cacheMiss = true;
     }
 

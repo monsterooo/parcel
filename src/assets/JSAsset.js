@@ -153,7 +153,7 @@ class JSAsset extends Asset {
       await this.loadSourceMap();
     }
 
-    await babel(this);
+    await babel(this); // 通过babel编译得到asset.ast
 
     // Inline environment variables
     if (this.options.target === 'browser' && ENV_RE.test(this.contents)) {

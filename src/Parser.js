@@ -80,7 +80,7 @@ class Parser {
   }
 
   getAsset(filename, options = {}) {
-    let Asset = this.findParser(filename);
+    let Asset = this.findParser(filename); // READ 加载到资源后缀对应的解析器
     options.parser = this;
     return new Asset(filename, options);
   }
