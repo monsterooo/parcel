@@ -1,5 +1,4 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import cache from './cache';
 
-console.log(React, ReactDOM);
+cache('debug/index.js');
 console.log('Hello Parcel');

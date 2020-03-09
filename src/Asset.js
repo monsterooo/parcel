@@ -77,7 +77,7 @@ class Asset {
     if (this.contents && this.mightHaveDependencies()) {
       // READ 如果可能有依赖则分析收集依赖
       await this.parseIfNeeded();
-      await this.collectDependencies();
+      await this.collectDependencies(); // READ 收集依赖
     }
   }
 

@@ -57,7 +57,7 @@ class Bundler extends EventEmitter {
     });
 
     this.pending = false;
-    this.loadedAssets = new Map();
+    this.loadedAssets = new Map(); // 加载的资源
     this.watchedAssets = new Map();
 
     this.farm = null;
@@ -99,8 +99,8 @@ class Bundler extends EventEmitter {
       target === 'node'
         ? false
         : typeof options.hmr === 'boolean'
-          ? options.hmr
-          : watch;
+        ? options.hmr
+        : watch;
     const scopeHoist =
       options.scopeHoist !== undefined ? options.scopeHoist : false;
     return {
@@ -242,7 +242,6 @@ class Bundler extends EventEmitter {
       // If this is the initial bundle, ensure the output directory exists, and resolve the main asset.
       if (isInitialBundle) {
         await fs.mkdirp(this.options.outDir);
-
         this.entryAssets = new Set();
         for (let entry of this.entryFiles) {
           try {
@@ -278,9 +277,10 @@ class Bundler extends EventEmitter {
       logger.progress(`Producing bundles...`);
 
       // Create a root bundle to hold all of the entry assets, and add them to the tree.
+      // READ 创建一个root bundle
       this.mainBundle = new Bundle();
       for (let asset of this.entryAssets) {
-        this.createBundleTree(asset, this.mainBundle);
+        this.createBundleTree(asset, this.mainBundle); // READ 根据asset创建Bundle到mainBundle中
       }
 
       // If there is only one child bundle, replace the root with that bundle.
@@ -415,8 +415,8 @@ class Bundler extends EventEmitter {
       return this.loadedAssets.get(path);
     }
 
-    let asset = this.parser.getAsset(path, this.options);
-    this.loadedAssets.set(path, asset);
+    let asset = this.parser.getAsset(path, this.options); // 获取文件对应的Asset对象
+    this.loadedAssets.set(path, asset); // 加入缓存
 
     this.watch(path, asset);
     return asset;
@@ -522,6 +522,7 @@ class Bundler extends EventEmitter {
     throw err;
   }
 
+  // READ 它会被PromiseQueue._runJob调用
   async processAsset(asset, isRebuild) {
     if (isRebuild) {
       asset.invalidate();
@@ -535,6 +536,7 @@ class Bundler extends EventEmitter {
 
   async loadAsset(asset) {
     if (asset.processed) {
+      // READ asset处理完成则不再进行处理
       return;
     }
 
@@ -570,7 +572,7 @@ class Bundler extends EventEmitter {
       }
     }
 
-    // Resolve and load asset dependencies
+    // Resolve and load asset dependencies // READ 解析和加依赖资源
     let assetDeps = await Promise.all(
       dependencies.map(async dep => {
         if (dep.includedInParent) {
@@ -590,7 +592,7 @@ class Bundler extends EventEmitter {
       })
     );
 
-    // Store resolved assets in their original order
+    // Store resolved assets in their original order // READ 将代码的依赖放入到它的asset.depAssets中
     dependencies.forEach((dep, i) => {
       asset.dependencies.set(dep.name, dep);
       let assetDep = assetDeps[i];
@@ -607,11 +609,19 @@ class Bundler extends EventEmitter {
     }
   }
 
+  /**
+   * 创建asset的bundle
+   * @param {*} asset 一个Asset资源对象可是已不同的类型 js map
+   * @param {*} bundle 父级的bundle
+   * @param {*} dep 依赖
+   * @param {*} parentBundles
+   */
   createBundleTree(asset, bundle, dep, parentBundles = new Set()) {
     if (dep) {
       asset.parentDeps.add(dep);
     }
 
+    // READ 共享传入的bundle
     if (asset.parentBundle && !bundle.isolated) {
       // If the asset is already in a bundle, it is shared. Move it to the lowest common ancestor.
       if (asset.parentBundle !== bundle) {
@@ -648,6 +658,7 @@ class Bundler extends EventEmitter {
       bundle.addAsset(asset);
     }
 
+    // READ 如果传入的bundle.type没有。则是mainBundle
     if ((dep && dep.dynamic) || !bundle.type) {
       // If the asset is already the entry asset of a bundle, don't create a duplicate.
       if (isEntryAsset) {
@@ -655,6 +666,8 @@ class Bundler extends EventEmitter {
       }
 
       // Create a new bundle for dynamic imports
+      // READ 为动态导入创建一个新的bundle
+      // READ 为bundle创建一个孩子bundle
       bundle = bundle.createChildBundle(asset, dep);
     } else if (
       asset.type &&
@@ -674,6 +687,7 @@ class Bundler extends EventEmitter {
     }
 
     // Add the asset to sibling bundles for each generated type
+    // READ 将传入的asset的所有文件类型生成它们对应的bundle。并且添加到bundle的兄弟bundle中
     if (asset.type && asset.generated[asset.type]) {
       for (let t in asset.generated) {
         if (asset.generated[t]) {
@@ -685,6 +699,7 @@ class Bundler extends EventEmitter {
     asset.parentBundle = bundle;
     parentBundles.add(bundle);
 
+    // 依赖的assets创建bundle
     for (let [dep, assetDep] of asset.depAssets) {
       this.createBundleTree(assetDep, bundle, dep, parentBundles);
     }

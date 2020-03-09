@@ -9,20 +9,26 @@ const crypto = require('crypto');
  */
 class Bundle {
   constructor(type, name, parent, options = {}) {
-    this.type = type;
-    this.name = name;
-    this.parentBundle = parent;
-    this.entryAsset = null;
-    this.assets = new Set();
-    this.childBundles = new Set();
-    this.siblingBundles = new Set();
-    this.siblingBundlesMap = new Map();
+    this.type = type; // asset类型如：js map
+    this.name = name; // 通常是文件绝对路径
+    this.parentBundle = parent; // 父级bundle
+    this.entryAsset = null; // 表示这个当前的bundle入口的asset
+    this.assets = new Set(); //
+    this.childBundles = new Set(); // 孩子bundle
+    this.siblingBundles = new Set(); // 兄弟bundle
+    this.siblingBundlesMap = new Map(); // 兄弟bundle hash表示
     this.offsets = new Map();
     this.totalSize = 0;
     this.bundleTime = 0;
-    this.isolated = options.isolated;
+    this.isolated = options.isolated; // 是否是孤立的bundle
   }
 
+  /**
+   * 根据一个asset创建一个bundle。也是就 JSAsset => Bundle对象的转换
+   * @param {*} asset
+   * @param {*} parentBundle
+   * @param {*} options
+   */
   static createWithAsset(asset, parentBundle, options) {
     let bundle = new Bundle(
       asset.type,
@@ -31,13 +37,17 @@ class Bundle {
       options
     );
 
-    bundle.entryAsset = asset;
-    bundle.addAsset(asset);
+    bundle.entryAsset = asset; // READ 记录来源asset
+    bundle.addAsset(asset); // 将bundle添加回到asset中
     return bundle;
   }
 
+  /**
+   * 为当前bundle添加asset
+   * @param {*} asset
+   */
   addAsset(asset) {
-    asset.bundles.add(this);
+    asset.bundles.add(this); // asset也添加bundle对象的指针
     this.assets.add(asset);
   }
 
@@ -54,32 +64,43 @@ class Bundle {
     return this.offsets.get(asset) || 0;
   }
 
+  /**
+   * 获取当前bundle下是否有相同tye的bundle
+   * @param {*} type
+   */
   getSiblingBundle(type) {
     if (!type || type === this.type) {
       return this;
     }
 
+    // READ 如果当前bundle中没有某个类型的bundle。比如 map
     if (!this.siblingBundlesMap.has(type)) {
+      // READ 那么会新建一个map的bundle
       let bundle = new Bundle(
         type,
         Path.join(
           Path.dirname(this.name),
           Path.basename(this.name, Path.extname(this.name)) + '.' + type
         ),
-        this
+        this // this是新建类型bundle的父bundle
       );
 
-      this.childBundles.add(bundle);
-      this.siblingBundles.add(bundle);
-      this.siblingBundlesMap.set(type, bundle);
+      this.childBundles.add(bundle); // bundle成为孩子bundle
+      this.siblingBundles.add(bundle); // bundle成为兄弟bundle
+      this.siblingBundlesMap.set(type, bundle); // 加入到bundleHash
     }
 
     return this.siblingBundlesMap.get(type);
   }
 
+  /**
+   * 创建一个childBundle
+   * @param {*} entryAsset 一个asset对象
+   * @param {*} options
+   */
   createChildBundle(entryAsset, options = {}) {
     let bundle = Bundle.createWithAsset(entryAsset, this, options);
-    this.childBundles.add(bundle);
+    this.childBundles.add(bundle); // 将创建的bundle添加到childBundles成为当前bundle的孩子
     return bundle;
   }
 

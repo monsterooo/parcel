@@ -118,6 +118,7 @@
     "vue-template-compiler": "^2.5.16"
   },
   "scripts": {
+    "debug": "node debug ./bin/cli.js build ./debug/index.js",
     "test": "cross-env NODE_ENV=test mocha",
     "test-coverage": "rm -rf coverage/* && nyc yarn test",
     "report-coverage": "nyc report --reporter=lcov && codecov",
